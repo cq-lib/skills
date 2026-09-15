@@ -24,5 +24,6 @@ Migration sequence:
 2. Rewrite imports, then calls and result handling.
 3. Replace serialization, simulation, and compilation with explicit modern modules.
 4. Add assertions for return types, mutation, ordering, exceptions, and numerical tolerance.
-5. Build the current extension and run focused tests.
+5. Run focused checks using the target environment; build the extension only
+   if it is missing or the task changes the binding/core.
 6. State unsupported legacy behavior explicitly rather than claiming compatibility.
