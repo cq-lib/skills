@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cqlib VQE"
+  short_description: "Run molecular and precompiled VQE workflows"
+  default_prompt: "Use $cqlib-vqe to run a small local VQE and check its energy and convergence."

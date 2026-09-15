@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cqlib Pulse"
+  short_description: "Build pulse circuits and inspect timing"
+  default_prompt: "Use $cqlib-pulse to build a mixed pulse circuit and verify its channel timing."

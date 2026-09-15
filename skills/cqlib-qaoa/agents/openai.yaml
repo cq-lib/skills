@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cqlib QAOA"
+  short_description: "Solve optimization problems using QAOA"
+  default_prompt: "Use $cqlib-qaoa to solve a small MaxCut problem locally and verify the decoded result."
