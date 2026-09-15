@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cqlib Tianyan"
+  short_description: "Run and interpret Tianyan quantum jobs"
+  default_prompt: "Use $cqlib-tianyan to prepare a QCIS submission and validate its result handling."

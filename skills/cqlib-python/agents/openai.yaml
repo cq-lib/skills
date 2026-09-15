@@ -1,4 +1,0 @@
-interface:
-  display_name: "Cqlib Python"
-  short_description: "Use Cqlib in Python projects"
-  default_prompt: "Use $cqlib-python to write and verify a quantum program with Cqlib."

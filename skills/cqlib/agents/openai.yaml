@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cqlib"
+  short_description: "Use Cqlib from Python, Rust, or C"
+  default_prompt: "Use $cqlib to write and verify a quantum program in the project's language."

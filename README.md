@@ -1,185 +1,251 @@
 # Cqlib Skills
 
-Agent skills for using Cqlib. The current skill helps an AI agent write,
-explain, debug, test, and migrate Python programs with the Cqlib SDK.
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-## What the Skill Does
+Agent skills for the Cqlib quantum-computing ecosystem, grounded in the
+repositories' source APIs rather than an assumed PyPI release.
 
-### `cqlib-python`
+## Skills and source repositories
 
-[`cqlib-python`](skills/cqlib-python/SKILL.md) covers:
+| Skill | Languages | Scope | Upstream repository |
+|---|---|---|---|
+| [cqlib](skills/cqlib/SKILL.md) | Python / Rust / C | Core circuits and parameters; simulation, compilation, formats, devices and mitigation where exposed | [cq-lib/cqlib](https://github.com/cq-lib/cqlib) |
+| [cqlib-tianyan](skills/cqlib-tianyan/SKILL.md) | Python / Rust / C | Authentication, backends, QCIS submission, polling, calibration and results | [cq-lib/cqlib-tianyan](https://github.com/cq-lib/cqlib-tianyan) |
+| [cqlib-pulse](skills/cqlib-pulse/SKILL.md) | Python | Pulse QCIS, waveforms, channel timing and cloud visualization | [cq-lib/cqlib-pulse](https://github.com/cq-lib/cqlib-pulse) |
+| [cqlib-qaoa](skills/cqlib-qaoa/SKILL.md) | Python | QUBO/Ising mapping, local optimization and Tianyan execution | [cq-lib/cqlib-qaoa](https://github.com/cq-lib/cqlib-qaoa) |
+| [cqlib-vqe](skills/cqlib-vqe/SKILL.md) | Python | Local VQE, chemistry preprocessing and Tianyan energy estimation | [cq-lib/cqlib-vqe](https://github.com/cq-lib/cqlib-vqe) |
 
-- circuits, gates, parameters, and ansatz templates;
-- state simulation and quantum-information utilities;
-- QCIS, OpenQASM 2, and OpenQASM 3;
-- compilation, devices, layouts, and noise models;
-- error mitigation; and
-- migration from the legacy Cqlib Python API.
+The former `cqlib-python` entry and the C/Rust guides are consolidated into
+`cqlib`: one repository, one skill, with language-specific references. The
+reviewed core C ABI supports circuit construction and parameters, not the full
+Python/Rust feature set. Tianyan's **main** branch has all three interfaces;
+its Git dependency on core `develop` is a separate branch choice.
 
-It is for Python code that uses Cqlib. It does not cover developing Cqlib
-itself, Rust or C APIs, or Tianyan job submission.
+Every skill links to its repository and relevant source/test directories.
+When a guide is insufficient, the agent should inspect the user's checkout
+first, then matching GitHub source at the relevant commit, tag or branch.
+It should not assume that PyPI contains the reviewed API or silently switch
+versions. If GitHub is inaccessible, it should report that limitation.
 
-When the skill is active, the agent is instructed to confirm the API from the
-installed Cqlib version or the current source stubs instead of relying on
-remembered interfaces. It should use public Cqlib modules, keep parameter and
-qubit ordering explicit, and run a relevant check after writing code.
+## Install the skills
 
-## How to Use
+Use `npx skills` for agent-aware installation, or the bundled Python installer
+for offline copies to an explicit directory. Both install skills, not SDKs.
+Use one installation method per destination; their update/backup mechanisms
+are independent.
 
-1. Install or load the complete `skills/cqlib-python/` directory in the agent.
-2. Start a new session if the agent discovers skills only at startup.
-3. Invoke `cqlib-python` explicitly, or ask the agent to use Cqlib Python.
+### Option 1: npx skills
 
-The exact location and invocation syntax depend on the agent:
-
-| Agent | Install or load | Invoke |
-|---|---|---|
-| Codex | `~/.codex/skills/cqlib-python/` or `<project>/.agents/skills/cqlib-python/` | `$cqlib-python ...` |
-| Claude Code | `~/.claude/skills/cqlib-python/` or `<project>/.claude/skills/cqlib-python/` | `/cqlib-python ...` |
-| Other agents | Import the complete `cqlib-python` directory if Agent Skills are supported | Agent-specific |
-
-### Codex
-
-Install the skill for the current user:
-
-```shell
-mkdir -p ~/.codex/skills
-ln -s /absolute/path/to/cqlib-skill/skills/cqlib-python \
-  ~/.codex/skills/cqlib-python
-```
-
-Alternatively, put the directory under
-`<project>/.agents/skills/cqlib-python/` to use it only in one project. Start a
-new session, then invoke it explicitly:
-
-```text
-$cqlib-python Create a parameterized circuit and verify the bound result.
-```
-
-Codex can also select it automatically when the request clearly mentions using
-Cqlib Python.
-
-### Claude Code
-
-Install the skill for the current user:
+Requires Node.js/npm; remote Git sources also require Git and network access.
+The [Vercel Skills CLI](https://github.com/vercel-labs/skills#install-a-skill)
+supports selecting skills, agents and project/global installation scope.
+Run remote installation commands from the project where the skills are needed:
 
 ```shell
-mkdir -p ~/.claude/skills
-ln -s /absolute/path/to/cqlib-skill/skills/cqlib-python \
-  ~/.claude/skills/cqlib-python
+# Inspect available entries without installing
+npx skills add cq-lib/skills --full-depth --list
+
+# Install the unified core skill; choose agents in the prompts
+npx skills add cq-lib/skills --full-depth --skill cqlib
+
+# Install all five library skills
+npx skills add cq-lib/skills --full-depth \
+  --skill cqlib cqlib-tianyan cqlib-pulse cqlib-qaoa cqlib-vqe
 ```
 
-Alternatively, put the directory under
-`<project>/.claude/skills/cqlib-python/`. Start a new session, then invoke it
-with Claude Code's slash syntax:
+The root `SKILL.md` is a repository navigator. The CLI normally stops discovery
+at a root skill, so these commands use `--full-depth` and select library names
+explicitly. The listing also includes `cqlib-ecosystem`; do not install it
+alongside the five library skills. Avoid `--all` or `--skill '*'` when using
+the repository root. See the [discovery implementation](https://github.com/vercel-labs/skills/blob/main/src/skills.ts).
+
+Installation is project-scoped by default. For a global installation targeting
+Codex, for example:
+
+```shell
+npx skills add cq-lib/skills --full-depth \
+  --skill cqlib cqlib-tianyan --agent codex --global
+```
+
+Use `--agent claude-code` for Claude Code, or select agents interactively.
+`--copy` selects independent copies instead of symlinks; review the CLI's
+destination and overwrite prompts before proceeding. These flags belong to
+`npx skills`, not to our Python installer.
+
+GitHub commands install the contents published in `cq-lib/skills`, not local
+uncommitted changes. If this revision is not yet pushed, or `--list` still
+shows only `cqlib-python`, use the local checkout. From this repository root:
+
+```shell
+npx skills add ./skills --list
+npx skills add ./skills --skill cqlib cqlib-tianyan
+```
+
+Pointing directly at `./skills` discovers only the five library skills and
+needs no `--full-depth`. To install them into another project, run there and
+replace `./skills` with the absolute path to this checkout's `skills/` folder.
+For a fork or unpublished branch, use the corresponding GitHub repository/tree
+URL instead of assuming upstream already contains the changes.
+
+### Option 2: bundled Python installer
+
+Requires Python 3.10+; this installer uses only the standard library and does
+not download packages, build SDKs, modify agent configuration or submit jobs.
+Run it from this checkout (or use an absolute path to the script).
+
+Choose the skills directory configured for your agent and substitute it for
+`/path/to/agent/skills`. The destination is required: no global installation
+is selected implicitly.
+
+```shell
+python3 scripts/install_skills.py --list
+python3 scripts/install_skills.py --target /path/to/agent/skills --dry-run
+python3 scripts/install_skills.py --target /path/to/agent/skills
+```
+
+To install only selected skills, repeat `--skill`:
+
+```shell
+python3 scripts/install_skills.py --target /path/to/agent/skills \
+  --skill cqlib --skill cqlib-tianyan
+```
+
+The installer copies complete skill directories, including references,
+examples and UI metadata. Copies remain usable after this checkout is moved;
+rerun the installer to pick up updates. It refuses existing destinations by
+default. To update while preserving the previous installation:
+
+```shell
+python3 scripts/install_skills.py --target /path/to/agent/skills \
+  --skill cqlib --replace
+```
+
+Backups are saved in a timestamped directory under the destination's sibling
+`skills-backups/` (or `<destination-name>-backups/` for another directory
+name), outside skill discovery. The exact location is printed. Restore by
+moving the new installation aside and moving the corresponding backup back
+to its original path.
+
+Old `cqlib-python`, `cqlib-rust` and `cqlib-c` installations are reported but
+not removed. After reviewing the merged `cqlib` skill, move old installations
+outside the agent's discovery directory to avoid overlapping entries.
+The Python installer leaves unrelated skills untouched. Use your agent's reload
+procedure after installation.
+
+SDK source-build instructions belong to each language guide; this script
+installs **skills only**.
+
+## Repository entrypoint and invocation
+
+The root [SKILL.md](SKILL.md) is a single navigation entrypoint for an agent
+reading this repository directly. It routes to the relevant library and
+language; it is not a sixth skill installed alongside the five library skills.
+Use the standard uppercase filename `SKILL.md`.
+
+For explicit invocation in an agent supporting `$skill-name`:
 
 ```text
-/cqlib-python Create a Bell-state circuit and verify its probabilities.
+$cqlib Use Rust to bind a circuit parameter and verify its probabilities.
+$cqlib Write a C consumer using the generated header, with correct cleanup.
+$cqlib-tianyan Prepare a C QCIS submission program; do not submit a live job.
+$cqlib-pulse Build a pulse sequence and check its channel timing locally.
+$cqlib-qaoa Solve weighted MaxCut and verify the objective sign and bit order.
+$cqlib-vqe Run a minimal local VQE without chemistry dependencies.
 ```
 
-Claude Code can also select it automatically from a request that clearly
-mentions Cqlib Python.
+For agents without skill discovery, provide the root `SKILL.md` and access
+to the full repository, or supply the selected skill directory. Uploading
+only the entrypoint omits its references. A direct model API needs the
+calling application to supply those files; an invocation string alone does
+not make local files available.
 
-### TeleAgent and Other Agents
-
-If an agent such as TeleAgent does not support Agent Skills directly, give it
-the complete skill directory or ask it to read `SKILL.md` and the referenced
-file required for the task. A remote agent must receive uploaded files because
-it cannot read a path on the local computer.
-
-For an agent that can read local files, use:
+## Layout and examples
 
 ```text
-Read /absolute/path/to/cqlib-python/SKILL.md and follow its instructions for
-this request. Load only the reference required for the task.
+SKILL.md                    Repository-level navigation
+scripts/
+  install_skills.py          Selective install, preview and backup/update
+  validate_skills.py         Links, syntax and optional offline examples
+tests/                      Installer and mocked Tianyan template tests
+skills/
+  cqlib/                    Python / Rust / C language routing
+  cqlib-tianyan/             Python / Rust / C execution guides
+  cqlib-pulse/
+  cqlib-qaoa/
+  cqlib-vqe/
 ```
 
-For a remote agent, upload the complete directory. Uploading only `SKILL.md`
-omits the task-specific material under `references/`.
+Each installed skill has a `SKILL.md`, `agents/openai.yaml`, focused
+`references/`, and example templates under `assets/`. Load only the
+references needed for the current task.
 
-If the platform has an Agent Skills import page, import the complete
-`cqlib-python` directory and use the invocation syntax shown by that platform.
+Offline examples:
 
-### Custom GPT and Model APIs
+- [Core Rust](skills/cqlib/assets/rust/core_workflow.rs): parameter binding,
+  asymmetric ordering, basis compilation and QCIS round-trip.
+- [Core C](skills/cqlib/assets/c/circuit_parameters.c): parameter ownership,
+  circuit binding and error returns.
+- [Pulse timing](skills/cqlib-pulse/assets/pulse_timeline.py): channel clocks,
+  barriers and QCIS round-trip.
+- [QAOA MaxCut](skills/cqlib-qaoa/assets/maxcut.py): exact objective enumeration,
+  bit ordering and bounded local optimization.
+- [Minimal VQE](skills/cqlib-vqe/assets/minimal_vqe.py): a one-qubit variational
+  problem with a known ground-state energy.
 
-For a custom GPT, put the main instructions from `SKILL.md` in its Instructions
-and upload the files under `references/` as Knowledge.
+Tianyan includes [Python](skills/cqlib-tianyan/assets/submit_qcis.py),
+[Rust](skills/cqlib-tianyan/assets/submit_qcis.rs) and
+[C](skills/cqlib-tianyan/assets/submit_qcis.c) submission templates. Running
+them with valid arguments and credentials submits real jobs. They do not
+embed keys or automatically resubmit after a polling timeout. Confirm the
+backend, shots, calibration mode and submission authority first.
 
-For a direct model API, the calling program must provide `SKILL.md` and the
-relevant reference in the model context. A model API does not discover local
-skill directories or implement `$cqlib-python` by itself.
+## Validation and maintenance
 
-Example request:
+Dependency-free checks:
 
-```text
-Use Cqlib Python to create a Bell-state circuit and verify its probabilities.
+```shell
+python3 scripts/validate_skills.py
+python3 -m unittest discover -s tests -v
 ```
 
-## What the Skill Includes
+With the source-built Python SDKs and their dependencies in the active
+environment, run the allowlisted local examples:
 
-```text
-skills/cqlib-python/
-├── SKILL.md
-├── agents/
-│   └── openai.yaml
-└── references/
-    ├── advanced-workflows.md
-    ├── circuits.md
-    ├── formats.md
-    ├── legacy-api.md
-    ├── quickstart.md
-    └── simulation.md
+```shell
+python3 scripts/validate_skills.py --offline-examples
 ```
 
-- `SKILL.md` is the entry point. Its YAML frontmatter identifies when the
-  skill applies, and its Markdown body defines routing and working rules.
-- `agents/openai.yaml` contains optional Codex interface metadata.
-- `references/` contains focused instructions loaded only when needed.
+This runs core Python snippets plus Pulse/QAOA/VQE examples, never the cloud
+submission templates. Compile C/Rust examples separately against the matching
+source/header using their language guides. Validate each skill and the root
+entrypoint with `skill-creator`'s `quick_validate.py` when available.
 
-### `SKILL.md`
+[tianyan_c_null.c](tests/tianyan_c_null.c) exercises the real Tianyan C ABI's
+NULL/error/cleanup paths without loading credentials or constructing a client.
+Compile it with Tianyan's generated include path and library (the same
+link setup as the C submission template), then run it locally.
 
-The YAML frontmatter contains:
+This review used local source revisions:
 
-- `name`: the skill identifier, `cqlib-python`;
-- `description`: the supported Cqlib tasks and the boundaries that prevent the
-  skill from being selected for unrelated requests.
+| Repository           | Reviewed commit |
+|----------------------|-----------------|
+| cqlib (main)         | `1d0a2c4`       |
+| cqlib-tianyan (main) | `4bd2b79`       |
+| cqlib-pulse          | `63bdd3e`       |
+| cqlib-qaoa           | `c3c952d`       |
+| cqlib-vqe            | `b173554`       |
 
-The Markdown body contains four parts:
+These are review baselines, not required dependency pins. When APIs change,
+check public exports, stubs/generated headers, implementation and focused
+tests together. Rust consumers sharing `Circuit` with Tianyan must resolve
+the same core crate identity, not just the same package version.
 
-- **Route the Task** maps a request to the appropriate reference;
-- **Confirm the API** explains how to identify the Cqlib version and check
-  public signatures;
-- **Implement** records important Cqlib usage rules;
-- **Verify** describes the checks to perform after producing code.
+Keep offline and live-cloud validation separate: mocks and compilation do
+not establish backend availability, authentication or actual hardware
+behavior. Chemistry examples additionally require their optional chemistry
+dependencies.
 
-### `agents/openai.yaml`
-
-This optional file provides the display name, short description, and suggested
-prompt used by compatible Codex interfaces. Other agents can use the skill
-without this file.
-
-### `references/`
-
-| Reference | Read it for |
-|---|---|
-| `quickstart.md` | Installing Cqlib, creating a first circuit, or choosing public imports |
-| `circuits.md` | Building circuits, gates, parameters, control flow, transformations, or ansatz templates |
-| `formats.md` | Reading, writing, or converting QCIS and OpenQASM programs |
-| `simulation.md` | Simulating states or calculating observables, metrics, and entropy |
-| `advanced-workflows.md` | Compiling circuits or working with devices, layouts, noise, results, and mitigation |
-| `legacy-api.md` | Updating programs written with the legacy Cqlib Python API |
-
-References are not intended to be loaded together for every request. For
-example, a circuit-construction request normally uses `circuits.md`, while a
-QCIS conversion request normally uses `formats.md`.
-
-The loading flow is:
-
-```text
-User request
-    → select cqlib-python from its name and description
-    → read SKILL.md
-    → read the relevant reference
-    → check the installed Cqlib API or source stubs
-    → write and verify the Cqlib program
-```
+Keep the English and Chinese READMEs aligned when changing installation
+commands, skill names, supported interfaces or review baselines. Skill
+instructions remain a single maintained set; translating this README does
+not create duplicate skills.

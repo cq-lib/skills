@@ -1,0 +1,46 @@
+# Local IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Python environments, bytecode and test/tool caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local credentials; keep shareable configuration templates
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Rust/C compilation output, not example source or Cargo.lock
+target/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.dSYM/
+/circuit_parameters
+/submit_qcis
+/tianyan_c_null
+/skills/cqlib/assets/c/circuit_parameters
+/skills/cqlib-tianyan/assets/submit_qcis
+/tests/tianyan_c_null
+
+# Installer staging and default backup directories
+.cqlib-install-*/
+skills-backups/

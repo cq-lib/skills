@@ -26,6 +26,10 @@ Relevant surfaces include `operations`, `depth()`, `dag()`, `inverse()`, `decomp
 
 Measurements and dynamic control flow introduce non-unitary behavior, so matrix-based validation may no longer apply.
 
+`Circuit.measure()` and `measure_bits()` return a `Measurement` receipt,
+not counts or the circuit. Keep that receipt for simulator `sample()`/`probs()`
+and preserve the requested measurement order. See [simulation.md](simulation.md).
+
 ## Custom gates
 
 Use `CircuitGate`, `MCGate`, `StandardGate`, and `UnitaryGate` through their documented append methods. Validate custom matrix shape and unitarity. Supply multi-control qubits in the exact order required by the current signature.
@@ -33,6 +37,11 @@ Use `CircuitGate`, `MCGate`, `StandardGate`, and `UnitaryGate` through their doc
 ## Dynamic circuits
 
 Use `Circuit.var()` and classical expressions for runtime state. Build `if_`, `if_else`, `while_`, `for_uint`, and `switch` bodies through callbacks; callback bodies are transactional. Use `measure_into` or `measure_bits_into` for existing classical targets. Inspect the local classical type/expression stubs before constructing literals or stores.
+
+Construction, binding, simulation, compilation, and export have different
+control-flow support. The reviewed core `assign_parameters` rejects circuits
+containing classical control; do not promise that a constructible dynamic
+circuit can also be bound or exported to QCIS.
 
 ## Ansatz
 

@@ -2,13 +2,19 @@
 
 ## Environment
 
-Cqlib currently requires CPython 3.10+ and NumPy 2.1+. Follow an existing project pin. For a new isolated environment, upstream documents the beta package as:
+Cqlib requires CPython 3.10+ and NumPy 2.1+ in the reviewed source. Follow the
+project's environment and source revision. For an unreleased checkout, build
+inside an activated virtual environment, from the core repository root:
 
 ```shell
-python -m pip install --pre cqlib
+maturin develop --release -m crates/binding-python/Cargo.toml
 ```
 
-Binary wheels depend on platform and architecture; building an sdist requires Rust.
+This requires Maturin and the Rust toolchain specified by the checkout. An
+existing wheel can instead be installed by its explicit local path. Do not
+upgrade from a package index to resolve a source/API mismatch. Confirm both
+`cqlib.__version__` and `cqlib.__file__`; building Python bindings uses
+`crates/binding-python/Cargo.toml`, whose version can differ from the workspace.
 
 ## First circuit
 
@@ -37,5 +43,6 @@ assert matrix.shape == (4, 4)
 | `cqlib.compile` | Compiler workflows and transforms |
 | `cqlib.device` | Devices, topology, layout, noise, and result models |
 | `cqlib.error_mitigation` | ZNE and virtual distillation |
+| `cqlib.visualization` | Text/SVG circuits, state plots, and result plots |
 
 Prefer the shortest public import supported by the target version. Do not import `cqlib._native` from user code.
