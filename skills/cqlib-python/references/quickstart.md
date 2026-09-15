@@ -38,4 +38,4 @@ assert matrix.shape == (4, 4)
 | `cqlib.device` | Devices, topology, layout, noise, and result models |
 | `cqlib.error_mitigation` | ZNE and virtual distillation |
 
-Prefer the shortest public import supported by the target version. Do not import `cqlib._native` from application code.
+Prefer the shortest public import supported by the target version. Do not import `cqlib._native` from user code.

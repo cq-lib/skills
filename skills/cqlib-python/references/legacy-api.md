@@ -16,7 +16,7 @@ Common directions:
 | mapping/transpilation helpers | current compiler, device, layout, and routing workflow |
 | `TianYanPlatform` / `GuoDunPlatform` | separate provider/adapter integration; no `cqlib.device` substitute |
 
-Gate and directive names, argument order, operation storage, sampling results, bit ordering, visualization, and platform execution all require behavioral migration—not just import changes.
+Gate and directive names, argument order, operation storage, sampling results, bit ordering, and platform execution all require behavioral migration—not just import changes.
 
 Migration sequence:
 

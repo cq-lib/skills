@@ -1,4 +1,4 @@
 interface:
   display_name: "Cqlib Python"
-  short_description: "Build and maintain quantum programs with Cqlib"
-  default_prompt: "Use $cqlib-python to build and verify a Python quantum circuit with Cqlib."
+  short_description: "Use Cqlib in Python projects"
+  default_prompt: "Use $cqlib-python to write and verify a quantum program with Cqlib."
